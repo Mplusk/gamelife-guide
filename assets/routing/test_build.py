@@ -39,8 +39,11 @@ class BuilderTests(unittest.TestCase):
     def test_outputs_embed_the_exclusions(self):
         destination = self.root / 'output'
         built = build.build(self.sing_box, destination, self.fetch, 'a' * 40)
-        self.assertEqual(set(built), {'geosite-gamelife-direct.srs', 'geoip-gamelife-direct.srs'})
-        for name in built:
+        self.assertEqual(set(built), {'geosite-gamelife-direct.srs', 'geoip-gamelife-direct.srs', 'source.json'})
+        metadata = json.loads((destination / 'source.json').read_text(encoding='utf-8'))
+        self.assertEqual(metadata['upstream_revision'], 'a' * 40)
+        self.assertEqual(set(metadata['sha256']), set(built) - {'source.json'})
+        for name in set(built) - {'source.json'}:
             decoded = self.root / (name + '.json')
             subprocess.run([self.sing_box, 'rule-set', 'decompile', '-o', str(decoded),
                             str(destination / name)], check=True, capture_output=True)

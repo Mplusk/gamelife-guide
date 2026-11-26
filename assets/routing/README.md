@@ -8,7 +8,8 @@ They are derived from [runetfreedom/russia-v2ray-rules-dat](https://github.com/r
 which is distributed under GPL-3.0; see `LICENSE`. `build.py` is the source for
 the transformation. The scheduled workflow reads all five upstream files from
 one immutable revision, compiles both outputs with sing-box 1.12.0, tests them
-with Hiddify core 5.9.15, and publishes only after all checks pass.
+with Hiddify core 5.9.15, and publishes only after all checks pass. `source.json`
+records the upstream revision and the SHA-256 of both published sets.
 
 Hiddify 5.9.15 checks remote rule sets every 120 hours while connected. A rule
 set is empty until its first successful download; a failed refresh retains its

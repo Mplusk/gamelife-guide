@@ -68,7 +68,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git add assets/routing/geosite-gamelife-direct.srs assets/routing/geoip-gamelife-direct.srs
+          git add assets/routing/geosite-gamelife-direct.srs assets/routing/geoip-gamelife-direct.srs assets/routing/source.json
           if git diff --cached --quiet; then
             echo 'No rule changes'
             exit 0

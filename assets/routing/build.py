@@ -7,6 +7,7 @@ client downloads of exclusions. An absent output matches nothing.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -100,8 +101,11 @@ def build(sing_box: str, destination: Path, fetcher=fetch, revision=None):
                 raise ValueError('invalid generated rule set: ' + name)
             built[name] = data
 
-        # Both artifacts are prepared before either published path is touched.
-        # A Git commit makes the pair available to clients as one revision.
+        metadata = {'version': 1, 'upstream_revision': revision,
+                    'sha256': {name: hashlib.sha256(data).hexdigest() for name, data in built.items()}}
+        built['source.json'] = (json.dumps(metadata, sort_keys=True, separators=(',', ':')) + '\n').encode()
+        # All artifacts are prepared before any published path is touched.
+        # A Git commit makes the pair and its metadata one revision.
         for name, data in built.items():
             target = destination / name
             fd, tmp = tempfile.mkstemp(prefix='.route-', dir=destination)
