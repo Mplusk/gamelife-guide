@@ -1,0 +1,88 @@
+name: Check and update Hiddify routing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/routing.yml'
+      - 'assets/routing/**'
+      - 'tools/**'
+      - 'routing.html'
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hiddify-routing
+  cancel-in-progress: false
+
+jobs:
+  routing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Fetch verified test binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --retry 3 \
+            https://github.com/SagerNet/sing-box/releases/download/v1.12.0/sing-box-1.12.0-linux-amd64.tar.gz \
+            -o "$RUNNER_TEMP/sing-box.tar.gz"
+          echo 'f59b1253ae0143997cb46915af30d14a33431dcbd7e39edacfcde8d73050faaf  '"$RUNNER_TEMP/sing-box.tar.gz" | sha256sum -c -
+          mkdir -p "$RUNNER_TEMP/sing-box"
+          tar -xzf "$RUNNER_TEMP/sing-box.tar.gz" -C "$RUNNER_TEMP/sing-box" --strip-components=1
+          curl --fail --silent --show-error --location --retry 3 \
+            https://github.com/hiddify/hiddify-core/releases/download/v5.9.15/hiddify-core-linux-amd64.tar.gz \
+            -o "$RUNNER_TEMP/hiddify.tar.gz"
+          echo '7793498bc9b86e58704a86f5517c5acceb4d907fd42cc30c80cd12ed8e9fa535  '"$RUNNER_TEMP/hiddify.tar.gz" | sha256sum -c -
+          mkdir -p "$RUNNER_TEMP/hiddify"
+          tar -xzf "$RUNNER_TEMP/hiddify.tar.gz" -C "$RUNNER_TEMP/hiddify" --strip-components=1
+      - name: Check builder, import and published page
+        shell: bash
+        run: |
+          set -euo pipefail
+          export SING_BOX="$RUNNER_TEMP/sing-box/sing-box"
+          python3 -m unittest discover -s assets/routing -p 'test_*.py' -v
+          python3 tools/render_routing.py --check
+      - name: Refresh both rule sets from one upstream revision
+        if: github.event_name != 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 assets/routing/build.py --sing-box "$RUNNER_TEMP/sing-box/sing-box"
+      - name: Test generated rules in the Hiddify core
+        env:
+          HIDDIFY_CORE_V5: ${{ runner.temp }}/hiddify/hiddify-core
+          HIDDIFY_TEST_REAL_SRS_DIR: ${{ github.workspace }}/assets/routing
+          REQUIRE_HIDDIFY_CORE_TESTS: '1'
+        run: python3 -m unittest discover -s tools -p 'test_routing_import.py' -v
+      - name: Publish changed rule sets
+        if: github.event_name != 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add assets/routing/geosite-gamelife-direct.srs assets/routing/geoip-gamelife-direct.srs
+          if git diff --cached --quiet; then
+            echo 'No rule changes'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Update Hiddify routing lists'
+          cat > "$RUNNER_TEMP/git-askpass" <<'EOF'
+          #!/bin/sh
+          case "$1" in
+            *Username*) printf '%s\n' x-access-token ;;
+            *) printf '%s\n' "$GH_TOKEN" ;;
+          esac
+          EOF
+          chmod 700 "$RUNNER_TEMP/git-askpass"
+          GIT_ASKPASS="$RUNNER_TEMP/git-askpass" GIT_TERMINAL_PROMPT=0 git -c credential.helper= push origin HEAD:main
+          rm -f "$RUNNER_TEMP/git-askpass"

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8f4">
+  <meta name="description" content="Подключение правил маршрутизации в Hiddify">
+  <title>Правила для Hiddify — GameLife</title>
+  <style>
+    :root{color-scheme:light;--ink:#1f2924;--muted:#66736a;--green:#dff0ce;--line:#dce2d9}
+    *{box-sizing:border-box}body{margin:0;background:#f7f8f4;color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}
+    a{color:inherit}.wrap{width:min(780px,calc(100% - 40px));margin:auto}.header{border-bottom:1px solid var(--line)}
+    .header .wrap{display:flex;justify-content:space-between;align-items:center;min-height:76px}.brand{font-size:21px;font-weight:800;text-decoration:none;letter-spacing:-.06em}
+    .brand span{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:11px;background:#253128;color:#cbec80;margin-right:9px;letter-spacing:0}
+    .back{font-size:13px;color:var(--muted);text-decoration:none}.main{padding:68px 0 70px}.eyebrow{font-size:11px;letter-spacing:.14em;font-weight:800;color:#748a70}
+    h1{font-size:clamp(40px,7vw,64px);letter-spacing:-.06em;line-height:1.08;margin:16px 0 20px}h1 em{font-family:Georgia,serif;color:#788d72;font-weight:400}
+    p{margin:0}.intro{color:var(--muted);font-size:18px;max-width:640px}.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:34px 0}
+    .card{background:white;border:1px solid #e6ebe3;border-radius:14px;padding:20px}.card b{display:block;font-size:15px;margin-bottom:4px}.card p{color:var(--muted);font-size:14px}
+    .dot{display:inline-block;width:8px;height:8px;background:#82b65b;border-radius:50%;margin-right:8px}
+    .box{background:#e8f2df;border:1px solid #d5e8c6;border-radius:17px;padding:28px}.box h2{font-size:23px;letter-spacing:-.035em;margin:0 0 9px}.box>p{font-size:14px;color:#5b705c}
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:30px;background:#253128;color:white;border-radius:9px;padding:15px 20px;font-weight:750;text-decoration:none;margin-top:22px}
+    .button span{color:#cbec80;font-size:20px}.steps{margin:32px 0 0;padding-left:23px}.steps li{padding:0 0 12px 5px;font-size:15px}.note{border-top:1px solid var(--line);margin-top:32px;padding-top:23px;color:var(--muted);font-size:13px}.note p+p{margin-top:12px}
+    .footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:12px}.footer .wrap{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+    a:focus-visible{outline:3px solid #56804b;outline-offset:4px}@media(max-width:560px){.main{padding:46px 0}.cards{grid-template-columns:1fr}.box{padding:22px}.button{width:100%}}
+  </style>
+</head>
+<body>
+  <header class="header"><div class="wrap"><a class="brand" href="./"><span>✳</span>GameLife</a><a class="back" href="./">← К инструкции</a></div></header>
+  <main class="main wrap">
+    <div class="eyebrow"><span class="dot"></span>ОДНО ПОДТВЕРЖДЕНИЕ В ПРИЛОЖЕНИИ</div>
+    <h1>Сайты открываются<br><em>с нужным маршрутом.</em></h1>
+    <p class="intro">Российские сайты из списка будут открываться напрямую, а сайты из списка заблокированных и остальные адреса — через выбранный VPN-сервер.</p>
+    <div class="cards">
+      <div class="card"><b>Напрямую</b><p>Российские сайты и сервисы из набора правил.</p></div>
+      <div class="card"><b>Через VPN</b><p>Заблокированные сайты и всё, что не попало в прямой список.</p></div>
+    </div>
+    <section class="box" aria-labelledby="install-title">
+      <h2 id="install-title">Включить на этом устройстве</h2>
+      <p>Откройте страницу на устройстве с установленным Hiddify 5.9.15. Нажмите кнопку и подтвердите импорт в приложении.</p>
+      <a class="button" id="import" href="hiddify:///settings/routing-options?routeRule=IntcIjFcIjpbe1wiMVwiOjAsXCIyXCI6dHJ1ZSxcIjNcIjpcImJ1aWx0aW46YnlwYXNzTGFuXCIsXCI0XCI6MX0se1wiMVwiOjEsXCIyXCI6dHJ1ZSxcIjNcIjpcItCg0L7RgdGB0LjQudGB0LrQuNC1INGB0LDQudGC0Ysg4oCUINC90LDQv9GA0Y%2FQvNGD0Y5cIixcIjRcIjoxLFwiNVwiOltcImh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9NcGx1c2svZ2FtZWxpZmUtZ3VpZGUvbWFpbi9hc3NldHMvcm91dGluZy9nZW9zaXRlLWdhbWVsaWZlLWRpcmVjdC5zcnNcIixcImh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9NcGx1c2svZ2FtZWxpZmUtZ3VpZGUvbWFpbi9hc3NldHMvcm91dGluZy9nZW9pcC1nYW1lbGlmZS1kaXJlY3Quc3JzXCJdfSx7XCIxXCI6MixcIjJcIjpmYWxzZSxcIjNcIjpcImJ1aWx0aW46YnlwYXNzUmVnaW9uXCIsXCI0XCI6MX0se1wiMVwiOjMsXCIyXCI6ZmFsc2UsXCIzXCI6XCJidWlsdGluOnN5c3RlbURpcmVjdFwiLFwiNFwiOjF9LHtcIjFcIjo0LFwiMlwiOmZhbHNlLFwiM1wiOlwiYnVpbHRpbjpibG9ja0Fkc1wiLFwiNFwiOjN9XX0i">Открыть в Hiddify <span>↗</span></a>
+    </section>
+    <ol class="steps">
+      <li>Заранее добавьте свою личную подписку и подключитесь к VPN.</li>
+      <li>Нажмите кнопку выше и подтвердите импорт правил.</li>
+      <li>Отключите и снова включите VPN; дождитесь загрузки списков.</li>
+    </ol>
+    <div class="note">
+      <p><strong>Как обновляются списки.</strong> Hiddify проверяет обновления примерно раз в пять дней, пока соединение работает и источник доступен. Подтверждать каждое обновление не нужно. При первой загрузке до получения списков весь обычный трафик проходит через VPN; при временном сбое сохраняются ранее загруженные правила.</p>
+      <p><strong>Перед импортом.</strong> Новые правила заменят ваши прежние правила маршрутизации Hiddify. Российские сайты при прямом подключении увидят обычный IP вашей сети. Списки не охватывают все сайты, а доступность может отличаться у разных операторов.</p>
+      <p>Если позже вручную изменить регион в настройках Hiddify, откройте эту страницу и импортируйте правила заново.</p>
+    </div>
+  </main>
+  <footer class="footer"><div class="wrap"><span>Инструкция GameLife</span><a href="https://web.telegram.org/a/#-5413491464" target="_blank" rel="noopener noreferrer">Поддержка в Telegram ↗</a></div></footer>
+</body>
+</html>
