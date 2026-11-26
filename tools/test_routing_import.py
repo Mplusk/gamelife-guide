@@ -399,6 +399,12 @@ class RouteImportTests(unittest.TestCase):
                     for target, host, expected in real_examples:
                         with self.subTest(real_data=True, target=target):
                             self.assertEqual(query(port, target, host), expected)
+                    if os.environ.get('HIDDIFY_VERIFY_EXAMPLES'):
+                        for domain, expected in [('agentura.ru', '192.0.2.22'),
+                                                 ('yandex.ru', '192.0.2.11'),
+                                                 ('2ip.io', '192.0.2.11')]:
+                            with self.subTest(real_dns=domain):
+                                self.assertEqual(query_dns(dns_port, domain), expected)
         finally:
             if proc and proc.poll() is None:
                 proc.terminate()
